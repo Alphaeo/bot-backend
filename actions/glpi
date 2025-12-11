@@ -1,0 +1,26 @@
+import smtplib
+from email.mime.text import MIMEText
+
+def send_glpi_ticket(subject: str, description: str):
+    sender = "automation@yourcompany.com"
+    receiver = "glpi@client.com"
+
+    body = f"""
+    Ticket Automatique
+
+    Sujet : {subject}
+    Description : 
+    {description}
+    """
+
+    msg = MIMEText(body)
+    msg["Subject"] = f"[Ticket Auto] {subject}"
+    msg["From"] = sender
+    msg["To"] = receiver
+
+    with smtplib.SMTP("smtp.office365.com", 587) as smtp:
+        smtp.starttls()
+        smtp.login("automation@yourcompany.com", "PASSWORD")
+        smtp.sendmail(sender, [receiver], msg.as_string())
+
+    return "Ticket GLPI envoyé."
