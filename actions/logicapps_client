@@ -1,0 +1,5 @@
+import requests
+
+def call_logic_app(flow_url: str, payload: dict):
+    res = requests.post(flow_url, json=payload)
+    return {"status": res.status_code, "response": res.text}
