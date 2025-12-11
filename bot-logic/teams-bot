@@ -1,0 +1,12 @@
+from botbuilder.core import TurnContext, ActivityHandler
+from ai.foundry_client import FoundryClient
+
+class TeamsBot(ActivityHandler):
+    def __init__(self):
+        super().__init__()
+        self.agent = FoundryClient()
+
+    async def on_message_activity(self, turn_context: TurnContext):
+        user_msg = turn_context.activity.text
+        response = await self.agent.ask(user_msg)
+        await turn_context.send_activity(response)
