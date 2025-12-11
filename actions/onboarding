@@ -1,0 +1,6 @@
+def start_onboarding(name: str, email: str, role: str):
+    return {
+        "status": "started",
+        "user": email,
+        "role": role
+    }
