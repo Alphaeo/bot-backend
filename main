@@ -1,0 +1,12 @@
+from fastapi import FastAPI, Request
+from bot_logic.teams_adapter import adapter
+from bot_logic.teams_bot import TeamsBot
+
+app = FastAPI()
+bot = TeamsBot()
+
+@app.post("/api/messages")
+async def messages(request: Request):
+    body = await request.body()
+    auth_header = request.headers.get("Authorization", "")
+    return await adapter.process_activity(body, auth_header, bot.on_turn)
