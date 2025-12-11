@@ -1,0 +1,27 @@
+import httpx
+import json
+from config.settings import Settings
+from ai.tools_router import execute_tool
+
+class FoundryClient:
+    def __init__(self):
+        self.settings = Settings()
+        self.endpoint = self.settings.FOUNDRY_ENDPOINT
+        self.api_key = self.settings.FOUNDRY_API_KEY
+        self.assistant_id = self.settings.FOUNDRY_ASSISTANT_ID
+
+    async def ask(self, user_msg: str):
+        async with httpx.AsyncClient(timeout=60) as client:
+            res = await client.post(
+                f"{self.endpoint}/assistants/{self.assistant_id}/messages",
+                headers={"Authorization": f"Bearer {self.api_key}"},
+                json={"role": "user", "content": user_msg}
+            )
+
+            content = res.json()
+
+            # Tool call ?
+            if "tool" in content:
+                return await execute_tool(content)
+
+            return content.get("content", "No response received.")
