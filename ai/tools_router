@@ -1,0 +1,26 @@
+from actions.glpi import create_glpi_ticket
+from actions.onboarding import start_onboarding
+from actions.email import send_email
+from actions.files import get_file
+from actions.ad import create_user
+from actions.logicapps_client import call_logic_app
+
+async def execute_tool(payload):
+    tool = payload["tool"]
+    args = payload.get("arguments", {})
+
+    tools = {
+        "create_glpi_ticket": create_glpi_ticket,
+        "start_onboarding": start_onboarding,
+        "send_email": send_email,
+        "get_file": get_file,
+        "create_user": create_user,
+        "run_logic_app": call_logic_app
+    }
+
+    if tool not in tools:
+        return f"Tool '{tool}' not implemented."
+
+    result = tools[tool](**args)
+
+    return str(result)
